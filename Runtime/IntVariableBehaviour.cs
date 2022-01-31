@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-namespace JauntyBear
+namespace JauntyBear.UnityData
 {
     public class IntVariableBehaviour : MonoBehaviour
     {
@@ -10,12 +10,10 @@ namespace JauntyBear
         public int minOnStart;
         public UnityEvent OnMinResponse;
         public UnityEvent OnMaxResponse;
-        public UnityEventInt OnChangeResponse;
-        public UnityEventString OnChangeTextResponse;
+        public UnityEvent<int> OnChangeResponse;
+        public UnityEvent<string> OnChangeTextResponse;
         public string textFormat = null;
         public bool OnChangeInclusive = false;
-
-        public bool debug;
 
         public bool setValueOnEnable = false;
         public int valueOnEnable = 0;
@@ -24,12 +22,11 @@ namespace JauntyBear
         {
             if (enableMinOnStart && intVariable.Value < minOnStart)
                 intVariable.SetValue(minOnStart);
-
         }
 
         private void OnEnable()
         {
-            intVariable.OnVariableChange += OnValueChanged;
+            intVariable.VariableChange += OnVariableChange;
             if (setValueOnEnable)
                 SetValue(valueOnEnable);
             OnChangeTextResponse?.Invoke(intVariable.Value.ToString(textFormat));
@@ -37,7 +34,7 @@ namespace JauntyBear
 
         private void OnDisable()
         {
-            intVariable.OnVariableChange -= OnValueChanged;
+            intVariable.VariableChange -= OnVariableChange;
         }
 
         public void SetValue(int value)
@@ -65,7 +62,7 @@ namespace JauntyBear
             intVariable.ApplyChange(-value);
         }
 
-        public void OnValueChanged(int value)
+        public void OnVariableChange(int value)
         {
             if (OnChangeInclusive)
             {
@@ -75,7 +72,6 @@ namespace JauntyBear
 
             if (intVariable.MinReached)
             {
-                if (debug) DebugExt.Log(name + ".ApplyChange:MinReached");
                 OnMinResponse?.Invoke();
             }
             else if (intVariable.MaxReached)
@@ -84,7 +80,6 @@ namespace JauntyBear
             }
             else if (OnChangeInclusive == false)
             {
-                if (debug) DebugExt.Log(name + ".ApplyChange:OnChangeResponse");
                 OnChangeResponse?.Invoke(value);
                 OnChangeTextResponse?.Invoke(value.ToString(textFormat));
             }

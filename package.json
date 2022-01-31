@@ -1,6 +1,6 @@
 {
   "name": "com.jauntybear.unitydata",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Jaunty Bear Unity Data",
   "description": "A package of tools for data processing in Unity 3D",
   "unity": "2020.3",
